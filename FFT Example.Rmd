@@ -1,0 +1,90 @@
+---
+title: "FFT Example"
+author: "Anastasia Vishnyakova"
+date: "July 8, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen=999)
+
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(scales)
+library(lazyeval)
+library(purrr)
+
+
+theme_set(theme_classic())
+default_options <- options()
+
+library(tidytext)
+library(stringr)
+
+library(lubridate)
+```
+
+
+```{r}
+# install.packages("forecast")
+library(forecast)
+
+install.packages("fpp2")
+library(fpp2)
+```
+
+
+```{r}
+data(calls)
+```
+
+
+```{r}
+autoplot(calls, xlab="Weeks")
+```
+
+```{r}
+calls %>% mstl %>% autoplot()
+```
+
+
+
+
+```{r}
+fft <- spectrum(log(calls), plot = FALSE)
+freq <- tibble(period = 1/fft$freq, power = fft$spec ** 2)
+
+freq %>%
+  ggplot(aes(period, power)) +
+    geom_line(color = "black") +
+    # scale_x_log10() +
+    ggtitle("Power Density Spectrum") +
+   xlim(c(0,1))
+
+```
+
+
+```{r}
+tibble(freq = fft$freq, 
+       power = fft$spec ** 2) %>%
+  ggplot(aes(freq, power)) +
+    geom_line(color = "black") +
+    # scale_x_log10() +
+    ggtitle("Power Density Spectrum") +
+   xlim(c(0,10))
+```
+
+
+
+```{r}
+fft_calls <- fourier(log(calls), K = c(10, 10))
+
+fft_calls
+```
+
+
+
+
