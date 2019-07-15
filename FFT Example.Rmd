@@ -42,6 +42,18 @@ data(calls)
 ```
 
 
+
+```{r}
+calls_df <- tibble(event_dt = names(calls),
+                  calls = as.numeric(calls)) %>%
+  write_csv("calls.csv")
+  
+```
+
+
+
+
+
 ```{r}
 autoplot(calls, xlab="Weeks")
 ```
